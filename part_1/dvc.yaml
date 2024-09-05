@@ -91,3 +91,14 @@ stages:
           cache: false
       - ${evaluate.predictions_file}:
           cache: false
+
+  tune:
+     cmd: python src/tune.py --params params.yaml
+     deps:
+       - src/hyperparameter_tuning.py
+       - src/train.py
+       - src/evaluate.py
+       - params.yaml
+     outs:
+       - outputs/tuning_results.csv:
+          cache: false
