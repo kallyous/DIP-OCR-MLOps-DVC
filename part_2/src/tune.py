@@ -2,11 +2,11 @@ import itertools
 from pathlib import Path
 from dvc.repo import Repo
 
-HERE = Path(__file__).parent.parent
-DATA_DIR = HERE / "data"
-
 # Initialize DVC repository
 repo = Repo(".")
+data_dir = Path(repo.root_dir, "part_2", "data")
+targets = str(Path(repo.root_dir, "part_2", "dvc.yaml"))
+print(f"Using DVC repository at '{repo.root_dir}' with data directory at '{data_dir}' and targets file at '{targets}'")
 
 # Define hyperparameter grid
 hog_orientations_grid = [9, 12]
@@ -18,7 +18,8 @@ for hog_orientations, lbp_radius, model_name in itertools.product(hog_orientatio
     # Run experiment with the current set of hyperparameters
     repo.experiments.run(
         queue=True,  # Queue the experiment
-        copy_paths=[str(DATA_DIR)],  # Copy the data directory to the experiment
+        targets=targets,
+        #copy_paths=[str(data_dir)],  # Copy the data directory to the experiment
         params=[
             f"extract.hog_orientations={hog_orientations}",
             f"extract.lbp_radius={lbp_radius}",
