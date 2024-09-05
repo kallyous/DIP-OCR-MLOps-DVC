@@ -95,14 +95,3 @@ stages:
           cache: false
       - ${base.root_dir}/${evaluate.predictions_file}:
           cache: false
-
-  tune:
-     cmd: python src/tune.py --params params.yaml
-     deps:
-       - src/tune.py
-       - src/train.py
-       - src/evaluate.py
-       - params.yaml
-     outs:
-       - ${base.root_dir}/outputs/tuning_results.csv:
-          cache: false

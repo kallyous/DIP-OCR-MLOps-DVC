@@ -19,8 +19,12 @@ def objective(trial):
     # Run the pipeline
     subprocess.run(['dvc', 'repro', 'train'])
 
+    # Get base.root_dir and evaluate.metrics_file params from params
+    root_dir = params['base']['root_dir']
+    metrics_file = params['evaluate']['metrics_file']
+
     # Load the evaluation metric from the output file
-    with open('outputs/metrics.json', 'r') as f:
+    with open(f'{root_dir}/{metrics_file}', 'r') as f:
         metric = float(f.read().strip())  # Assuming the metric is a single float value
 
     return metric  # Minimize or maximize based on your requirement
@@ -30,6 +34,7 @@ study.optimize(objective, n_trials=100)
 
 # Save best parameters
 best_params = study.best_params
+
 with open('outputs/tuning_results.csv', 'w') as f:
     for key, value in best_params.items():
         f.write(f"{key},{value}\n")
