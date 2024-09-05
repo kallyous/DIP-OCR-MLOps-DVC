@@ -9,6 +9,8 @@ stages:
       --blur_kernel ${preprocess.blur_kernel}
       --threshold_method ${preprocess.threshold_method}
       --morph_kernel ${preprocess.morph_kernel}
+      --block_size ${preprocess.block_size}
+      --c ${preprocess.c}
     deps:
     - src/preprocess.py
     - ${preprocess.data_dir}
