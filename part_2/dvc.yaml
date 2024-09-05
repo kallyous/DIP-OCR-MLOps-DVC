@@ -18,7 +18,7 @@ stages:
       - src/preprocess.py
       - ${base.root_dir}/${preprocess.data_dir}
     outs:
-      - ${preprocess.output_dir}:
+      - ${base.root_dir}/${preprocess.output_dir}:
           cache: false
 
   segment:

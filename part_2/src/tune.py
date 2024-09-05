@@ -20,7 +20,7 @@ def objective(trial):
     subprocess.run(['dvc', 'repro', 'train'])
 
     # Load the evaluation metric from the output file
-    with open('outputs/metrics.csv', 'r') as f:
+    with open('outputs/metrics.json', 'r') as f:
         metric = float(f.read().strip())  # Assuming the metric is a single float value
 
     return metric  # Minimize or maximize based on your requirement
