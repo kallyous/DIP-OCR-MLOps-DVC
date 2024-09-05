@@ -1,8 +1,9 @@
 schema: '2.0'
 stages:
   preprocess:
-    cmd: python src/preprocess.py --data_dir data/images/train --output_dir outputs/preprocessed
-      --blur_kernel 5 --threshold_method adaptive --morph_kernel 3
+    cmd: python src/preprocess.py --data_dir /home/warley/dev/estagio-pdi/part_2/data/images/train
+      --output_dir /home/warley/dev/estagio-pdi/part_2/outputs/preprocessed --blur_kernel
+      5 --threshold_method adaptive --morph_kernel 3
     deps:
     - path: data/images/train
       hash: md5
