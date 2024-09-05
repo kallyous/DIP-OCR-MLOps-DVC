@@ -1,40 +1,29 @@
-import optuna
-import subprocess
-import yaml
+import itertools
+from pathlib import Path
+from dvc.repo import Repo
 
-# Load params.yaml to get the default values for the hyperparameters
-with open('params.yaml', 'r') as f:
-    params = yaml.safe_load(f)
+HERE = Path(__file__).parent.parent
+DATA_DIR = HERE / "data"
 
-def objective(trial):
-    # Define the search space for hyperparameters
-    params['preprocess']['blur_kernel'] = trial.suggest_int('preprocess.blur_kernel', 3, 15)
-    params['extract']['hog_orientations'] = trial.suggest_int('extract.hog_orientations', 6, 12)
-    params['train']['random_state'] = trial.suggest_int('train.random_state', 1, 100)
+# Initialize DVC repository
+repo = Repo(".")
 
-    # Save the updated parameters to params.yaml
-    with open('params.yaml', 'w') as f:
-        yaml.safe_dump(params, f)
+# Define hyperparameter grid
+hog_orientations_grid = [9, 12]
+lbp_radius_grid = [1, 2]
+model_name_grid = ["SVM", "RandomForest"]
 
-    # Run the pipeline
-    subprocess.run(['dvc', 'repro', 'train'])
+# Iterate over all combinations of hyperparameters
+for hog_orientations, lbp_radius, model_name in itertools.product(hog_orientations_grid, lbp_radius_grid, model_name_grid):
+    # Run experiment with the current set of hyperparameters
+    repo.experiments.run(
+        queue=True,  # Queue the experiment
+        copy_paths=[str(DATA_DIR)],  # Copy the data directory to the experiment
+        params=[
+            f"extract.hog_orientations={hog_orientations}",
+            f"extract.lbp_radius={lbp_radius}",
+            f"train.model_name={model_name}",
+        ],
+    )
+    print(f"Experiment queued for HOG orientations={hog_orientations}, LBP radius={lbp_radius}, Model={model_name}")
 
-    # Get base.root_dir and evaluate.metrics_file params from params
-    root_dir = params['base']['root_dir']
-    metrics_file = params['evaluate']['metrics_file']
-
-    # Load the evaluation metric from the output file
-    with open(f'{root_dir}/{metrics_file}', 'r') as f:
-        metric = float(f.read().strip())  # Assuming the metric is a single float value
-
-    return metric  # Minimize or maximize based on your requirement
-
-study = optuna.create_study(direction='maximize')
-study.optimize(objective, n_trials=100)
-
-# Save best parameters
-best_params = study.best_params
-
-with open('outputs/tuning_results.csv', 'w') as f:
-    for key, value in best_params.items():
-        f.write(f"{key},{value}\n")
