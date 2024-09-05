@@ -5,8 +5,8 @@ stages:
   preprocess:
     cmd: >-
       python src/preprocess.py
-      --data_dir ${preprocess.data_dir}
-      --output_dir ${preprocess.output_dir}
+      --data_dir ${base.root_dir}/${preprocess.data_dir}
+      --output_dir ${base.root_dir}/${preprocess.output_dir}
       --blur_kernel ${preprocess.blur_kernel}
       --threshold_method ${preprocess.threshold_method}
       --morph_kernel ${preprocess.morph_kernel}
@@ -90,4 +90,15 @@ stages:
       - ${evaluate.metrics_file}:
           cache: false
       - ${evaluate.predictions_file}:
+          cache: false
+
+  tune:
+     cmd: python src/tune.py --params params.yaml
+     deps:
+       - src/tune.py
+       - src/train.py
+       - src/evaluate.py
+       - params.yaml
+     outs:
+       - outputs/tuning_results.csv:
           cache: false

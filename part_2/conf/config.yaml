@@ -6,3 +6,6 @@ defaults:
   - extract: defaults
   - train: defaults
   - evaluate: defaults
+
+base:
+  root_dir: /home/warley/dev/estagio-pdi/part_2
