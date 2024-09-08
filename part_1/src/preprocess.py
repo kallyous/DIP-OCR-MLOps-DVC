@@ -1,3 +1,4 @@
+
 import argparse
 from pathlib import Path
 
@@ -8,6 +9,8 @@ from tqdm import tqdm
 
 from utils import TQDM_FORMAT
 
+
+
 def parse_arguments() -> argparse.Namespace:
     """
     Parse command-line arguments for the preprocessing script.
@@ -15,13 +18,32 @@ def parse_arguments() -> argparse.Namespace:
     Returns:
         argparse.Namespace: Parsed command-line arguments.
     """
+
     parser = argparse.ArgumentParser(description="Preprocess images for OCR.")
-    parser.add_argument("--data_dir", type=str, default="data/images/train", help="Directory of images to preprocess.")
-    parser.add_argument("--output_dir", type=str, default="outputs/preprocessed", help="Output dir to save preprocessed images.")
-    parser.add_argument("--blur_kernel", type=int, default=7, help="Kernel size for Gaussian blur.")
-    parser.add_argument("--threshold_method", type=str, default="otsu", choices=['otsu', 'adaptive'], help="Thresholding method.")
-    parser.add_argument("--morph_kernel", type=int, default=3, help="Kernel size for morphological operations.")
+    
+    parser.add_argument("--data_dir",
+                        type=str, default="data/images/train",
+                        help="Directory of images to preprocess.")
+    
+    parser.add_argument("--output_dir",
+                        type=str, default="outputs/preprocessed",
+                        help="Output dir to save preprocessed images.")
+    
+    parser.add_argument("--blur_kernel",
+                        type=int, default=7,
+                        help="Kernel size for Gaussian blur.")
+    
+    parser.add_argument("--threshold_method", type=str, default="otsu",
+                        choices=['otsu', 'adaptive'],
+                        help="Thresholding method.")
+    
+    parser.add_argument("--morph_kernel",
+                        type=int, default=3,
+                        help="Kernel size for morphological operations.")
+    
     return parser.parse_args()
+
+
 
 def load_image(image_path: Path) -> np.ndarray:
     """
@@ -37,6 +59,8 @@ def load_image(image_path: Path) -> np.ndarray:
     grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     return grayscale_image
 
+
+
 def reduce_noise(image: np.ndarray, kernel_size: int = 3) -> np.ndarray:
     """
     Apply Gaussian blur to reduce noise in the image.
@@ -50,6 +74,8 @@ def reduce_noise(image: np.ndarray, kernel_size: int = 3) -> np.ndarray:
     """
     blurred_image = cv2.GaussianBlur(image, (kernel_size, kernel_size), 0)
     return blurred_image
+
+
 
 def apply_threshold(image: np.ndarray, method: str = 'otsu') -> np.ndarray:
     """
@@ -74,6 +100,8 @@ def apply_threshold(image: np.ndarray, method: str = 'otsu') -> np.ndarray:
 
     return binary_image
 
+
+
 def morphological_operations(image: np.ndarray, kernel: int = 3) -> np.ndarray:
     """
     Apply morphological operations to separate characters in the image.
@@ -88,6 +116,8 @@ def morphological_operations(image: np.ndarray, kernel: int = 3) -> np.ndarray:
     kernel_matrix = np.ones((kernel, kernel), np.uint8)
     morph_image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel_matrix)
     return morph_image
+
+
 
 def preprocess_image(image_path: Path, blur_kernel: int = 5, threshold_method: str = 'otsu', morph_kernel: int = 3) -> np.ndarray:
     """
@@ -107,6 +137,8 @@ def preprocess_image(image_path: Path, blur_kernel: int = 5, threshold_method: s
     image = apply_threshold(image, method=threshold_method)
     image = morphological_operations(image, kernel=morph_kernel)
     return image
+
+
 
 def main(args: argparse.Namespace) -> None:
     """
@@ -134,6 +166,7 @@ def main(args: argparse.Namespace) -> None:
             # Write image to output directory
             output_path = output_dir / image_path.name
             cv2.imwrite(str(output_path), processed_image)
+
 
     
 if __name__ == "__main__":
