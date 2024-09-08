@@ -1,3 +1,7 @@
+# FORK
+
+Esse repositório é um fork para atividade avaliativa de Processamento Digital de Imagens, lecionada pelo prof Thiago Vieira no Instituto de Computação da Ufal em 2024.
+
 ## Digital Image Processing: OCR with MLOps Using DVC and Guild AI
 
 This project is part of a two-day practical workshop on Digital Image Processing, focusing on OCR (Optical Character Recognition) with an emphasis on MLOps practices using DVC (Data Version Control) and Guild AI. The workshop covers setting up an OCR pipeline, versioning datasets, running and tracking experiments, hyperparameter tuning, and analyzing results.
